@@ -18,17 +18,16 @@ def index():
 @app.route('/<path:path>')
 def parse_path(path):
   queue = path.split('/')
-  possible_namespace = ''
+  possible_interpretation = ''
 
   while len(queue):
     head = queue[0]
-    would_be_namespace = possible_namespace + head
-    # is the would be namespace a real namespace?
-    if is_namespace(would_be_namespace):
-      
+    would_be_interpretation = possible_interpretation + head
+    # is the would be interpretation a real interpretation?
+    if is_interpretation(would_be_interpretation):
+      pass
 
   return path
-  
 
 @app.route('/object/<path>/<address>')
 def parse_object(path, address):
@@ -69,27 +68,9 @@ def prove_object(path):
     except Exception:
       raise Exception
 
-
-
-"""
-@app.route('/object/outcome/', methods=['PUT', 'OPTIONS'])
-@cross_origin()
-def create_object_1():
-    try:
-        # object_parts = json.loads(payload)
-        # address = create(object_parts)
-        return { "hi" : "bye" }
-        # return address
-    except Exception:
-      raise Exception
-
-
-"""
-
-
-@app.route('/object/universe/<address>')
-def load_universe(address):
-    namespaces = {}
+@app.route('/object/context/<address>')
+def load_context(address):
+    interpretations = {}
     try:
         object_string = read(address)
         return jsonify(object_string)
