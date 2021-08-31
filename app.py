@@ -1,33 +1,44 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
+from unrival_py import *
 app = Flask(__name__)
+app.config['CORS_HEADERS'] = 'Content-Type'
+
 cors = CORS(app, resource={
     r"/*":{
         "origins":"*"
     }
 })
 
-app.config['CORS_HEADERS'] = 'Content-Type'
-from unrival_py import *
+@app.route('/context/<address>')
+def load_context(address):
+  """
+  Map context parts associating interpretation addresses with values
+  to parts associating addresses with strings
+  """
+  return resolve_context(address)
 
-@app.route('/')
-def index():
-  return 'Server Works!'
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
-def parse_path(path):
-  queue = path.split('/')
-  possible_interpretation = ''
+def parse_path(path, context):
+  """
+  Determine whether a valid interpretation has been entered in a url,
+  or if a valid object address has been entered,
+  and return the object address if so.
 
-  while len(queue):
-    head = queue[0]
-    would_be_interpretation = possible_interpretation + head
-    # is the would be interpretation a real interpretation?
-    if is_interpretation(would_be_interpretation):
-      pass
+  Args:
+    path (str): part of a url representing a possible interpretation and/or object address
+    context (str): address of context in which interpretation is meaningful
+  Returns:
+    str: interpretation
+  """
 
-  return path
+  value = interpret_object(context, None, [path])
+  print(value)
+  if value:
+    return value
+  return None
 
 @app.route('/object/<path>/<address>')
 def parse_object(path, address):
